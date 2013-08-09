@@ -1,5 +1,8 @@
-/*********************
- * Author: Maxx Boehme
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to make move of the computer AI.
  */
 
 import java.awt.Point;
@@ -9,13 +12,82 @@ import java.util.Random;
 public class ComputerAI {
 	
 	private Random r;
+	private AILevel level;
 	
 	ComputerAI(){
-		r = new Random();
+		this.r = new Random();
+		this.level = AILevel.Hard;
+	}
+	
+	public void setLevel(AILevel l){
+		this.level = l;
 	}
 	
 	public Point turn(Board b, Token t, int turn){
-		Point p = win(b, t);
+		Point p;
+		if(this.level == AILevel.Easy){
+			p = this.easy(b, t, turn);
+		} else if(this.level == AILevel.Medium){
+			p = this.medium(b,  t, turn);
+		} else {
+			p = this.hard(b, t, turn);
+		}
+		return p;
+	}
+	
+	private Point easy(Board b, Token t, int turn){
+        Point p = win(b, t);
+		
+		if(p==null){
+			p = blockWin(b, t);
+		}
+		
+		if(p == null){
+			p = this.random(b, t);
+		}
+		System.out.println("Point: "+p.x+p.y);
+		return p;
+	}
+	
+	private Point medium(Board b, Token t, int turn){
+        Point p = win(b, t);
+		
+		if(p==null){
+			p = blockWin(b, t);
+		}
+		
+		int choice = r.nextInt(2);
+		System.out.println("********************\nr: "+choice);
+		if(choice == 1){
+			if(turn%2 == 0) {
+				if(p == null && turn == 4){
+					p = this.defenceDiagnalAttack(b, t);
+				}
+
+				if(p == null && turn == 4){
+					p = defenceCornerChooser(b, t);
+				}
+
+				if(p == null){
+					p = defenceMoves(b, t);
+				}
+			} else {
+				if(p == null){
+					p = this.chooseRandomCorner(b, t);
+				}
+			}
+		}
+		
+		if(p == null){
+			p = this.random(b, t);
+		}
+		System.out.println("Point: "+p.x+p.y);
+		return p;
+	}
+	
+	private Point hard(Board b, Token t, int turn){
+        Point p = win(b, t);
+		
 		if(p==null){
 			p = blockWin(b, t);
 		}
@@ -24,11 +96,11 @@ public class ComputerAI {
 			if(p == null && turn == 4){
 				p = this.defenceDiagnalAttack(b, t);
 			}
-			
+
 			if(p == null && turn == 4){
 				p = defenceCornerChooser(b, t);
 			}
-			
+
 			if(p == null){
 				p = defenceMoves(b, t);
 			}

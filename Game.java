@@ -1,5 +1,8 @@
-/*********************
- * Author: Maxx Boehme
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to manage the TicTacToe game.
  */
 
 import java.awt.*;
@@ -82,7 +85,6 @@ public class Game implements Runnable{
 		} else {
 			this.changeState(GameState.Turn);
 		}
-		//this.paint();
 	}
 	
 	public boolean playerTurn(int x, int y){
@@ -114,8 +116,6 @@ public class Game implements Runnable{
 							this.changeState(GameState.Turn);
 						}
 					}
-					System.out.println("Turn: "+this.turn);
-					//this.paint();
 				}
 			}
 		}
@@ -144,7 +144,6 @@ public class Game implements Runnable{
 		} else {
 			this.changeState(GameState.Turn);
 		}
-		//this.paint();
 	}
 	
 	public void paint(){
@@ -194,21 +193,21 @@ public class Game implements Runnable{
 
 			this.g.setColor(Color.white);
 			this.g.setFont(new Font("Ariel", Font.BOLD, 12));
-			this.g.drawString("Draws", 230, 420);
-			this.g.drawString(players[0].getName(), stringPositon(players[0].getName(), 100, 4), 420);
-			this.g.drawString(players[1].getName(), stringPositon(players[1].getName(), 400, 4), 420);
+			this.g.drawString("Draws", stringPositon("Draws", 250), 420);
+			this.g.drawString(players[0].getName(), stringPositon(players[0].getName(), 100), 420);
+			this.g.drawString(players[1].getName(), stringPositon(players[1].getName(), 400), 420);
 			this.g.setFont(new Font("Ariel", Font.BOLD, 20));
-			this.g.drawString(players[0].getWins()+"", stringPositon(players[0].getWins()+"", 100, 5), 440);
-			this.g.drawString(players[0].getDraws()+"", stringPositon(players[0].getDraws()+"", 250, 5), 440);
-			this.g.drawString(players[1].getWins()+"", stringPositon(players[1].getWins()+"", 400, 5), 440);
+			this.g.drawString(players[0].getWins()+"", stringPositon(players[0].getWins()+"", 100), 440);
+			this.g.drawString(players[0].getDraws()+"", stringPositon(players[0].getDraws()+"", 250), 440);
+			this.g.drawString(players[1].getWins()+"", stringPositon(players[1].getWins()+"", 400), 440);
 
 			this.g.setFont(new Font("Ariel", Font.BOLD, 12));
 			if(this.state != GameState.NewGame){
 				String turn = players[currentplayer].getName()+"'s turn";
-				this.g.drawString(turn, stringPositon(turn, 250, 3), 80);
+				this.g.drawString(turn, stringPositon(turn, 250), 80);
 			} else {
 				String turn = "Click for new Game";
-				this.g.drawString("Click for new Game", stringPositon(turn, 250, 3), 80);
+				this.g.drawString("Click for new Game", stringPositon(turn, 250), 80);
 			}
 		}
 	}
@@ -219,8 +218,8 @@ public class Game implements Runnable{
 		board.clear();
 	}
 	
-	private static int stringPositon(String s, int x, int size){
-		return x-(s.length()*size);
+	private int stringPositon(String s, int x){
+		return x-(this.g.getFontMetrics().stringWidth(s)/2);
 	}
 	
 	public void initNewGame(int playerfirst){

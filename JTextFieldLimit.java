@@ -1,14 +1,18 @@
-import java.awt.FlowLayout;
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to limit the length of strings in a JTextField
+ */
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
-class JTextFieldLimit extends PlainDocument {
+public class JTextFieldLimit extends PlainDocument {
+	private static final long serialVersionUID = -5920830285791732021L;
 	private int limit;
+	
 	JTextFieldLimit(int limit) {
 		super();
 		this.limit = limit;

@@ -1,3 +1,10 @@
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to show user a prompt for a JTextField.
+ */
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -16,6 +23,8 @@ import javax.swing.text.*;
  */
 public class TextPrompt extends JLabel implements FocusListener, DocumentListener
 {
+	private static final long serialVersionUID = 2942345503015565455L;
+
 	public enum Show
 	{
 		ALWAYS,

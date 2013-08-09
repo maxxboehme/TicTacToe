@@ -1,5 +1,8 @@
-/*********************
- * Author: Maxx Boehme
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class is used to create and maintain the playing board.
  */
 
 import java.awt.*;
@@ -50,31 +53,6 @@ public class Board {
 	public Token getCellType(int x, int y){
 		return board[x][y].getType();
 	}
-	
-	/*public int[] hasWon(Player p, int x, int y){
-		Token t = p.getType();
-		int[] result = new int[4];
-		int mid = (this.SIZE / this.ROWS) / 2;
-		m.lock();
-		if(board[x][0].getType() == t && board[x][1].getType() == t && board[x][2].getType() == t){
-			g.setColor(Color.white);
-			g.drawLine(mid+pos[0], x*this.Cell_SIZE + mid + pos[1], mid+pos[0]+(2 * this.Cell_SIZE), x*this.Cell_SIZE + mid + pos[1]);
-			result[0] = result[2] = x;
-			result[1] = 0;
-			result[3] = 2;
-		} else if(board[0][y].getType() == t && board[1][y].getType() == t && board[2][y].getType() == t){
-			result[0] = 0;
-			result[1] = result[3] = y;
-			result[2] = 2;
-		} else if(board[0][0].getType() == t && board[1][1].getType() == t && board[2][2].getType() == t){
-			result[0] = result[1] = 0;
-			result[1] = result[2] = 2;
-		} else if(board[0][2].getType() == t && board[1][1].getType() == t && board[2][0].getType() == t){
-			result = true;
-		}
-		m.unlock();
-		return result;
-	}*/
 	
 	public boolean hasWon(Player p, int x, int y){
 		Token t = p.getType();
@@ -158,7 +136,6 @@ public class Board {
 		m.lock();
 		if(x >= 0 && x < ROWS && y >= 0 && y < COLUMS){
 			board[x][y].set(p.getType(), p.getColor());
-			System.out.println("------HELLO-------");
 			result = true;
 		}
 		m.unlock();

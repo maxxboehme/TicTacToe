@@ -1,5 +1,11 @@
-import java.awt.Color;
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to group data for the cells of the Board class.
+ */
 
+import java.awt.Color;
 
 public class Cell {
 

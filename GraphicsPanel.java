@@ -1,17 +1,29 @@
-/*********************
- * Author: Maxx Boehme
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to show board to the user
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import java.awt.image.*;
-import javax.swing.*;
-import javax.swing.event.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.Timer;
 
 public class GraphicsPanel extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 
-	private static final boolean PRETTY = true;  // true to anti-alias
+	private static final boolean PRETTY = true;
     
     private int width, height;    // dimensions of window frame
     private BufferedImage image;  // remembers drawing commands
@@ -70,25 +82,5 @@ public class GraphicsPanel extends JPanel implements ActionListener {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {}
-    }
-    
-    // take the current contents of the panel and write them to a file
-    public void save(String filename) {
-        String extension = filename.substring(filename.lastIndexOf(".") + 1);
-        
-        // create second image so we get the background color
-        BufferedImage image2 = new BufferedImage(this.width, this.height,
-                                                 BufferedImage.TYPE_INT_RGB);
-        Graphics g = image2.getGraphics();
-        g.setColor(this.getBackground());
-        g.fillRect(0, 0, this.width, this.height);
-        g.drawImage(this.image, 0, 0, this);
-        
-        // write file
-        try {
-            javax.imageio.ImageIO.write(image2, extension, new java.io.File(filename));
-        } catch (java.io.IOException e) {
-            System.err.println("Unable to save image:\n" + e);
-        }
     }
 }

@@ -1,94 +1,64 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.print.attribute.AttributeSet;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.Document;
-import javax.swing.text.MaskFormatter;
-import javax.swing.text.PlainDocument;
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class that use used to hold the whole TicTacToe GUI.
+ */
 
 import java.awt.CardLayout;
-import java.awt.GridLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import javax.swing.ButtonModel;
-import javax.swing.SpringLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import java.awt.FlowLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JTextField;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import java.awt.Component;
-import javax.swing.ButtonGroup;
-import java.awt.Font;
-import javax.swing.UIManager;
-import javax.swing.JFormattedTextField;
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 
-public class TicTacToeGUI extends JFrame {
-
-	private JPanel contentPane;
+public class TicTacToeContentPane extends JPanel {
+	private static final long serialVersionUID = 5453749950717452195L;
+	
+	private JPanel me;
 	private CardLayout c;
 	private Game game;
 	private JPanel PlayersPanel;
 	private JPanel gamePanel;
+	private JPanel AIPanel;
+	private JPanel NumberOfPlayersPanel;
 	private Player p1;
 	private Player p2;
-
+	
 	/**
-	 * Launch the application.
+	 * Create the panel.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TicTacToeGUI frame = new TicTacToeGUI();
-					Toolkit toolkit= frame.getToolkit();
-					Dimension size = toolkit.getScreenSize();
-					frame.setLocation(size.width/2-frame.getWidth()/2, size.height/2-frame.getHeight()/2);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public TicTacToeGUI() {
-		setTitle("Tic-Tac-Toe");
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(550, 550);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+	public TicTacToeContentPane() {
+		me = this;
+		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		c = new CardLayout(0, 0);
-		contentPane.setLayout(c);
+		this.setLayout(c);
 		
 		this.p1 = new Player(Token.X, Color.red, "Maxx Amand Boehme");
-		this.p2 = new Player(Token.O, new ComputerAI(), Color.cyan, "Gus Stonewall Boehme");
+		this.p2 = new Player(Token.O, true, Color.cyan, "Gus Stonewall Boehme");
+		this.p2.setAILevel(AILevel.Medium);
 		
-		NumberOfPlayersPanel npp = new NumberOfPlayersPanel(contentPane, c);
-		contentPane.add(npp, "NumberPlayersPanel");
-		npp.setLayout(null);
+		this.setUpNumberOfPlayersPanel();
 		
+		this.setUpAIPanel();
 		this.setUpPlayersPanel();
-		
 		
 		/* Game Panel */
 		gamePanel = new JPanel();
-		contentPane.add(gamePanel, "Game");
+		this.add(gamePanel, "Game");
 		gamePanel.setLayout(null);
 		GraphicsPanel gp = new GraphicsPanel(500, 450);
 		Graphics g = gp.getG();
@@ -96,13 +66,6 @@ public class TicTacToeGUI extends JFrame {
 		gp.game(this.game);
 		gp.setBounds(15, 10, 500, 450);
 		gamePanel.add(gp);
-		/*game.playerTurn(0, 0);
-		game.playerTurn(1, 1);
-		game.playerTurn(0, 2);
-		game.playerTurn(0, 1);
-		game.playerTurn(1, 0);
-		game.playerTurn(2, 1);
-		game.playerTurn(2, 1);*/
 		gp.addMouseListener(new MouseAdapter() {
 	         @Override
 	         public void mouseClicked(MouseEvent e) {  // mouse-clicked handler
@@ -124,16 +87,112 @@ public class TicTacToeGUI extends JFrame {
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				game.clearGame();
-				c.show(contentPane, "NumberPlayersPanel");
+				c.show(me, "NumberPlayersPanel");
 			}
 		});
-		btnBack.setBounds(426, 478, 89, 23);
+		btnBack.setBounds(15, 478, 89, 23);
 		gamePanel.add(btnBack);
+		
+		JButton btnNewGame = new JButton("New Game");
+		btnNewGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				game.createNewGame();
+			}
+		});
+		btnNewGame.setBounds(415, 478, 100, 23);
+		gamePanel.add(btnNewGame);
+	}
+	
+	private void setUpNumberOfPlayersPanel(){
+		this.NumberOfPlayersPanel = new JPanel();
+		this.add(this.NumberOfPlayersPanel, "NumberPlayersPanel");
+		this.NumberOfPlayersPanel.setLayout(null);
+		
+		JButton OnePlayerButton = new JButton("1 Player");
+		OnePlayerButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		OnePlayerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				c.show(me, "AIPanel");
+				p2.setAI(true);
+			}
+		});
+		OnePlayerButton.setBounds(198, 194, 150, 60);
+		this.NumberOfPlayersPanel.add(OnePlayerButton);
+		
+		JButton TwoPlayersButton = new JButton("2 Players");
+		TwoPlayersButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		TwoPlayersButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				c.show(me, "PlayersPanel");
+				p2.setAI(false);
+			}
+		});
+		TwoPlayersButton.setBounds(198, 277, 150, 60);
+		this.NumberOfPlayersPanel.add(TwoPlayersButton);
+		
+		JLabel title = new JLabel("Tic-Tac-Toe");
+		title.setHorizontalAlignment(SwingConstants.CENTER);
+		title.setFont(new Font("Franklin Gothic Heavy", Font.BOLD, 40));
+		title.setBounds(155, 104, 234, 53);
+		this.NumberOfPlayersPanel.add(title);
+	}
+	
+	private void setUpAIPanel() {
+		this.AIPanel = new JPanel();
+		this.add(this.AIPanel, "AIPanel");
+		this.AIPanel.setLayout(null);
+		
+		JButton easyAIButton = new JButton("Easy");
+		easyAIButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				p2.setAILevel(AILevel.Easy);
+				c.show(me, "PlayersPanel");
+			}
+		});
+		easyAIButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		easyAIButton.setBounds(195, 176, 150, 40);
+		AIPanel.add(easyAIButton);
+		
+		JButton mediumAIButton = new JButton("Medium");
+		mediumAIButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				p2.setAILevel(AILevel.Medium);
+				c.show(me, "PlayersPanel");
+			}
+		});
+		mediumAIButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		mediumAIButton.setBounds(195, 221, 150, 40);
+		AIPanel.add(mediumAIButton);
+		
+		JButton hardAIButton = new JButton("Hard");
+		hardAIButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				p2.setAILevel(AILevel.Hard);
+				c.show(me, "PlayersPanel");
+			}
+		});
+		hardAIButton.setFont(new Font("Tahoma", Font.BOLD, 16));
+		hardAIButton.setBounds(195, 266, 150, 40);
+		AIPanel.add(hardAIButton);
+		
+		JButton backButton = new JButton("Back");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				c.show(me, "NumberPlayersPanel");
+			}
+		});
+		backButton.setBounds(10, 478, 89, 23);
+		AIPanel.add(backButton);
+		
+		JLabel lblNewLabel_1 = new JLabel("Computer Level");
+		lblNewLabel_1.setFont(new Font("Tahoma", Font.BOLD, 30));
+		lblNewLabel_1.setBounds(152, 109, 244, 40);
+		AIPanel.add(lblNewLabel_1);
 	}
 	
 	private void setUpPlayersPanel(){
 		PlayersPanel = new JPanel();
-		contentPane.add(PlayersPanel, "PlayersPanel");
+		this.add(PlayersPanel, "PlayersPanel");
 		PlayersPanel.setLayout(null);
 		
 		final JTextField Player1TextField = new ReturnIfEmptyTextField("Player 1");
@@ -143,7 +202,7 @@ public class TicTacToeGUI extends JFrame {
 		Player1TextField.setColumns(10);
 		Player1TextField.setDocument(new JTextFieldLimit(20));
 		TextPrompt tp = new TextPrompt("Player1", Player1TextField);
-		tp.changeAlpha(0.5f);
+		tp.changeAlpha(0.8f);
 
 		
 		final JTextField Player2TextField = new ReturnIfEmptyTextField("Player 2");
@@ -153,7 +212,7 @@ public class TicTacToeGUI extends JFrame {
 		Player2TextField.setColumns(10);
 		Player2TextField.setDocument(new JTextFieldLimit(20));
 		TextPrompt tp2 = new TextPrompt("Player2", Player2TextField);
-		tp2.changeAlpha(0.5f);
+		tp2.changeAlpha(0.8f);
 		
 		JLabel lblPlayer = new JLabel("Player 1");
 		lblPlayer.setFont(new Font("Tahoma", Font.BOLD, 16));
@@ -188,7 +247,7 @@ public class TicTacToeGUI extends JFrame {
 		JButton Back = new JButton("Back");
 		Back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				c.show(contentPane, "NumberPlayersPanel");
+				c.show(me, "NumberPlayersPanel");
 			}
 		});
 		Back.setBounds(10, 478, 89, 23);
@@ -317,7 +376,7 @@ public class TicTacToeGUI extends JFrame {
 				P2BlueRB.setSelected(true);
 				RadioButtonX.setSelected(true);
 				Player1First.setSelected(true);
-				c.show(contentPane, "Game");
+				c.show(me, "Game");
 			}
 		});
 		Start.setBounds(435, 478, 89, 23);

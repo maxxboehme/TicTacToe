@@ -1,10 +1,16 @@
+/**
+ * @author Maxx Boehme
+ * @version 1
+ *
+ * Class used to group Player information.
+ */
+
 import java.awt.Color;
-
-
 
 public class Player {
 	
 	private ComputerAI ai;
+	private boolean isAI;
 	private Token type;
 	private int wins;
 	private int draws;
@@ -12,23 +18,24 @@ public class Player {
 	private String name;
 	private Color c;
 	
-	Player(Token t, ComputerAI ai, Color c, String name){
+	Player(Token t, boolean ai, Color c, String name){
 		type = t;
 		wins = draws = losses = 0;
 		this.c = c;
-		this.ai = ai;
+		this.isAI = ai;
+		this.ai = new ComputerAI();
 		this.name = name;
 	}
 	Player(Token t, Color c, String name){
-		this(t, null, c, name);
+		this(t, false, c, name);
 	}
 	
 	Player(Token t, Color c){
-		this(t, null, c, null);
+		this(t, false, c, null);
 	}
 	
 	Player(){
-		this(Token.Empty, null, null, null);
+		this(Token.Empty, false, null, null);
 	}
 	
 	public void setColor(Color c){
@@ -55,11 +62,15 @@ public class Player {
 		type = t;
 	}
 	
+	public void setAILevel(AILevel l){
+		this.ai.setLevel(l);
+	}
+	public void setAI(boolean ai){
+		this.isAI = ai;
+	}
+	
 	public boolean isAI(){
-		if(ai == null){
-			return false;
-		}
-		return true;
+		return this.isAI;
 	}
 	
 	public ComputerAI getAI(){
